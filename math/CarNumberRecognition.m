@@ -9,15 +9,15 @@ function CarNumberRecognition(filename)
     %image = imfilter(image,filt);
     
     image = edge(image, 'log');
-    imshow(image);
     
     image = image(:,:,:) < 150; %отделение фона от объекта
-
-    image = imopen(image,strel('disk',2)); %замыкание контуров
-    image = (bwlabel(image,8));
-
-    coloredImage = label2rgb(image);
-    figure;
-    imshow(coloredImage);
+    dispImage(image, 'after fon');
+    
+    imageAfterClosure = imopen(image,strel('disk',2)); %замыкание контуров
+    imageAfterClosure = (bwlabel(image,8));
+    
+    dispImage(imageAfterClosure, 'after closure');
+    
+    coloredImage = label2rgb(imageAfterClosure);
 end
 

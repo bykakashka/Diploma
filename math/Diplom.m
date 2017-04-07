@@ -1,4 +1,5 @@
 clc;
-pathToImage = 'E:/Диплом/math/testImages/';
-image = '1.png';
-CarNumberRecognition(strcat(pathToImage, image));
+pathToImage = 'E:/Diploma/Diploma/math/testImages/';
+image = '3.jpg';
+%CarNumberRecognition(strcat(pathToImage, image));
+tryGetBorders(strcat(pathToImage, image));
