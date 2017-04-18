@@ -1,12 +1,20 @@
-function [ ProcessingImage ] = prepareImage( originalImage )
+function [ processingImage ] = prepareImage( originalImage )
     image = imadjust(originalImage);
-    countColor = uint64(0);
-    for i = 1:numel(image)
-        countColor = countColor + uint64(image(i));
-    end
-    sizePixel = i;
-    average = countColor/sizePixel;
+    image = medfilt2(image,[3 3]);
     
-    ProcessingImage = image(:,:) > average;
+    filt = fspecial('log',[7 7], 0.3);
+    image = imfilter(image,filt);
+    
+    processingImage = image(:,:,:) > 150;
+%    
+%    countColor = uint64(0);
+%    for i = 1:numel(image)
+%        countColor = countColor + uint64(image(i));
+%    end
+%    sizePixel = i;
+%    average = countColor/sizePixel;
+    
+%    ProcessingImage = image(:,:) > average;
+
 end
 
