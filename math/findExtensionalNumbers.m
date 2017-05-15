@@ -1,23 +1,53 @@
-function [ extensionalImages ] = findExtensionalNumbers( src )
-    originalImage = rgb2gray(imread(src));    
+function [ extensionalImages ] = findExtensionalNumbers( originalImage )        
     image = prepareImage(originalImage);
+%     image = imdilate(image, strel('disk', 2));
+%     image = imerode(image, strel('disk', 2));
+    image = image(:,:,:) == 0;
+    image = imopen(image, strel('disk', 2));
+    image = bwlabel(image, 8);
+    image = image(:,:,:) == 0;
     
     k = 1;
-    minConvexArea = numel(image) * 0.1; %min 10%
-    maxConvexArea = numel(image) * 0.5; %max 20%
+    minArea = 100;
     
-    Idata = regionprops(image,'Area','Image','Orientation','BoundingBox','ConvexArea');
+    framedImages = regionprops(image,'Area','Image','Orientation','BoundingBox','ConvexArea');
+    [a, b] = sort([framedImages.Area], 'descend');
+    Idata = framedImages(b);
+    
+    k = 1;
     for i=1:length(Idata)
-      ratio = Idata(i).BoundingBox(3)/Idata(i).BoundingBox(4);
+        ratio = calculateRatio(Idata(i));
 
-      convexArea = Idata(i).ConvexArea;
-      if (convexArea > minConvexArea) && (convexArea < maxConvexArea) && (ratio < 7) && (ratio > 2)
-        bound = floor(Idata(i).BoundingBox);
-        pices(k) = Idata(i);
-        pices(k).Image = imcrop(originalImage,bound);
-        k = k + 1;
-      end
+        convexArea = Idata(i).Area;
+        if (ratio < 5.5) && (ratio > 2)
+          if (convexArea > minArea)
+            bound = floor(Idata(i).BoundingBox);
+            pices(k) = Idata(i);
+            pices(k).Image = imcrop(originalImage,bound);
+            k = k + 1;
+          end
+        end
     end
     
-    extensionalImages = pices;
+    if exist('pices') == 1
+        extensionalImages = pices;
+    else
+        extensionalImages = logical.empty;
+    end
+end
+
+function [ratio] = calculateRatio(image) 
+    if abs(image.Orientation) > 7.5
+        alpha = image.Orientation*pi/180;
+        s = sin(alpha);
+        c = cos(alpha);
+        a = image.BoundingBox(3);
+        b = image.BoundingBox(4);
+        
+        x = (a*c - b*s) / (c^2 - s^2);
+        y = (b*c - a*s) / (c^2 - s^2);
+        ratio = x/y;
+    else
+        ratio = image.BoundingBox(3)/image.BoundingBox(4);
+    end
 end

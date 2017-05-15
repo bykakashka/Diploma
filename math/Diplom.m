@@ -1,9 +1,20 @@
-clc;
-pathToImage = 'E:/Diploma/Diploma/math/testImages/';
-image = '3.jpg';
-%CarNumberRecognition(strcat(pathToImage, image));
-extensionalNumbers = findExtensionalNumbers(strcat(pathToImage, image));
+%TODO add more ideal digitals
 
-for i=1:length(extensionalNumbers)
-    findDigitals(extensionalNumbers(i));
+function Diplom()
+    clc;
+    pathToImage = 'E:/Diploma/Diploma/math/testImages/';
+    images = dir('testImages');
+    
+    for i=3:length(images)
+        src = strcat(pathToImage, images(i).name);
+        numbers = getNumberFromImage(src);
+        
+        fprintf('image %s : ', images(i).name);
+        if isempty(numbers)
+            fprintf('cant find numbers\n');
+        else
+            fprintf('%s\n', numbers);
+        end
+    end
 end
+
