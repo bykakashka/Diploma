@@ -5,8 +5,7 @@ function [ processingImage ] = prepareImage( originalImage )
     filt = fspecial('log',[7 7], 0.3);
     image = imfilter(image,filt);
     
-    image = image(:,:,:) > 150;
-
+    image = im2bw(image);
     processingImage = image;
 end
 

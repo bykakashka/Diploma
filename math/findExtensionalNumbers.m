@@ -1,16 +1,14 @@
 function [ extensionalImages ] = findExtensionalNumbers( originalImage )        
     image = prepareImage(originalImage);
-%     image = imdilate(image, strel('disk', 2));
-%     image = imerode(image, strel('disk', 2));
-    image = image(:,:,:) == 0;
-    image = imopen(image, strel('disk', 2));
-    image = bwlabel(image, 8);
-    image = image(:,:,:) == 0;
+    
+%     image = image(:,:,:) == 0;
+%     image = imopen(image, strel('disk', 2));
+%     image = image(:,:,:) == 0;
     
     k = 1;
     minArea = 100;
     
-    framedImages = regionprops(image,'Area','Image','Orientation','BoundingBox','ConvexArea');
+    framedImages = regionprops(image,'Area','Image','Orientation','BoundingBox');
     [a, b] = sort([framedImages.Area], 'descend');
     Idata = framedImages(b);
     

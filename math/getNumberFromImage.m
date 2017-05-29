@@ -8,7 +8,7 @@ function [ number ] = getNumberFromImage( src )
         
         for j=1:length(rotatedNumber)
             digitalsImages = findDigitalsImages(rotatedNumber(j));
-        
+            if (i == 4) continue; end
             if ~isempty(digitalsImages)
                 number = getDigitalsFromImages(digitalsImages);
                 if length(number) > 3
